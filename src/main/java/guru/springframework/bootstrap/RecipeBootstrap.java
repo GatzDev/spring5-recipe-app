@@ -32,11 +32,17 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
         this.unitOfMeasureRepository = unitOfMeasureRepository;
     }
 
+    private void loadRecipesIfNotLoaded() {
+        if (recipeRepository.count() == 0) {
+            recipeRepository.saveAll(getRecipes());
+            log.debug("Loading Bootstrap Data");
+        }
+    }
+
     @Override
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        recipeRepository.saveAll(getRecipes());
-        log.debug("Loading Bootstrap Data");
+        loadRecipesIfNotLoaded();
     }
 
     private List<Recipe> getRecipes() {
