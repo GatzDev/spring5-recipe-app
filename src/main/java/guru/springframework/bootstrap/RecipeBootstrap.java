@@ -15,9 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Created by jt on 6/13/17.
- */
+
 @Slf4j
 @Component
 public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEvent> {
@@ -32,18 +30,77 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
         this.unitOfMeasureRepository = unitOfMeasureRepository;
     }
 
-    private void loadRecipesIfNotLoaded() {
-        if (recipeRepository.count() == 0) {
-            recipeRepository.saveAll(getRecipes());
-            log.debug("Loading Bootstrap Data");
-        }
-    }
+
+
+
+
 
     @Override
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        loadRecipesIfNotLoaded();
+        log.debug("Starting data initialization...");
+        if (categoryRepository.count() == 0) {
+            loadCategories();
+        }
+        if (unitOfMeasureRepository.count() == 0) {
+            loadUom();
+        }
+        log.debug("Data initialization complete.");
     }
+
+
+    private void loadCategories() {
+        Category americanCategory = new Category();
+        americanCategory.setDescription("American");
+        categoryRepository.save(americanCategory);
+
+        Category mexicanCategory = new Category();
+        mexicanCategory.setDescription("Mexican");
+        categoryRepository.save(mexicanCategory);
+
+        Category italianCategory = new Category();
+        italianCategory.setDescription("Italian");
+        categoryRepository.save(italianCategory);
+
+        Category fast_foodCategory = new Category();
+        fast_foodCategory.setDescription("Fast Food");
+        categoryRepository.save(fast_foodCategory);
+    }
+
+    private void loadUom() {
+        UnitOfMeasure teaspoonUom = new UnitOfMeasure();
+        teaspoonUom.setDescription("Teaspoon");
+        unitOfMeasureRepository.save(teaspoonUom);
+
+        UnitOfMeasure tablespoonUom = new UnitOfMeasure();
+        tablespoonUom.setDescription("Tablespoon");
+        unitOfMeasureRepository.save(tablespoonUom);
+
+        UnitOfMeasure cupUom = new UnitOfMeasure();
+        cupUom.setDescription("Cup");
+        unitOfMeasureRepository.save(cupUom);
+
+        UnitOfMeasure pinchUom = new UnitOfMeasure();
+        pinchUom.setDescription("Pinch");
+        unitOfMeasureRepository.save(pinchUom);
+
+        UnitOfMeasure ounceUom = new UnitOfMeasure();
+        ounceUom.setDescription("Ounce");
+        unitOfMeasureRepository.save(ounceUom);
+
+        UnitOfMeasure eachUom = new UnitOfMeasure();
+        eachUom.setDescription("Each");
+        unitOfMeasureRepository.save(eachUom);
+
+        UnitOfMeasure dashUom = new UnitOfMeasure();
+        dashUom.setDescription("Dash");
+        unitOfMeasureRepository.save(dashUom);
+
+        UnitOfMeasure pintUom = new UnitOfMeasure();
+        pintUom.setDescription("Pint");
+        unitOfMeasureRepository.save(pintUom);
+    }
+
 
     private List<Recipe> getRecipes() {
 
