@@ -6,6 +6,7 @@ import guru.springframework.repositories.RecipeRepository;
 import guru.springframework.repositories.UnitOfMeasureRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,7 @@ import java.util.Optional;
 
 @Slf4j
 @Component
+@Profile("default")
 public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
     private final CategoryRepository categoryRepository;
@@ -30,77 +32,12 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
         this.unitOfMeasureRepository = unitOfMeasureRepository;
     }
 
-
-
-
-
-
     @Override
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        log.debug("Starting data initialization...");
-        if (categoryRepository.count() == 0) {
-            loadCategories();
-        }
-        if (unitOfMeasureRepository.count() == 0) {
-            loadUom();
-        }
-        log.debug("Data initialization complete.");
+        recipeRepository.saveAll(getRecipes());
+        log.debug("Loading Bootstrap Data");
     }
-
-
-    private void loadCategories() {
-        Category americanCategory = new Category();
-        americanCategory.setDescription("American");
-        categoryRepository.save(americanCategory);
-
-        Category mexicanCategory = new Category();
-        mexicanCategory.setDescription("Mexican");
-        categoryRepository.save(mexicanCategory);
-
-        Category italianCategory = new Category();
-        italianCategory.setDescription("Italian");
-        categoryRepository.save(italianCategory);
-
-        Category fast_foodCategory = new Category();
-        fast_foodCategory.setDescription("Fast Food");
-        categoryRepository.save(fast_foodCategory);
-    }
-
-    private void loadUom() {
-        UnitOfMeasure teaspoonUom = new UnitOfMeasure();
-        teaspoonUom.setDescription("Teaspoon");
-        unitOfMeasureRepository.save(teaspoonUom);
-
-        UnitOfMeasure tablespoonUom = new UnitOfMeasure();
-        tablespoonUom.setDescription("Tablespoon");
-        unitOfMeasureRepository.save(tablespoonUom);
-
-        UnitOfMeasure cupUom = new UnitOfMeasure();
-        cupUom.setDescription("Cup");
-        unitOfMeasureRepository.save(cupUom);
-
-        UnitOfMeasure pinchUom = new UnitOfMeasure();
-        pinchUom.setDescription("Pinch");
-        unitOfMeasureRepository.save(pinchUom);
-
-        UnitOfMeasure ounceUom = new UnitOfMeasure();
-        ounceUom.setDescription("Ounce");
-        unitOfMeasureRepository.save(ounceUom);
-
-        UnitOfMeasure eachUom = new UnitOfMeasure();
-        eachUom.setDescription("Each");
-        unitOfMeasureRepository.save(eachUom);
-
-        UnitOfMeasure dashUom = new UnitOfMeasure();
-        dashUom.setDescription("Dash");
-        unitOfMeasureRepository.save(dashUom);
-
-        UnitOfMeasure pintUom = new UnitOfMeasure();
-        pintUom.setDescription("Pint");
-        unitOfMeasureRepository.save(pintUom);
-    }
-
 
     private List<Recipe> getRecipes() {
 
